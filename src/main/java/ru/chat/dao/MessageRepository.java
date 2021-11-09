@@ -1,4 +1,4 @@
-package ru.chat.repository;
+package ru.chat.dao;
 
 import org.springframework.data.repository.CrudRepository;
 import ru.chat.model.Message;

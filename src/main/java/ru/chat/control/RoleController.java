@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.chat.model.Role;
-import ru.chat.repository.RoleRepository;
+import ru.chat.service.role.RoleService;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,15 +15,16 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/roles")
 public class RoleController {
 
-    private RoleRepository roleRep;
+    private RoleService roleService;
 
-    public RoleController(RoleRepository roleRep) {
-        this.roleRep = roleRep;
+    public RoleController(RoleService roleService) {
+        this.roleService = roleService;
     }
 
     @GetMapping("/")
     public ResponseEntity<List<Role>> findAll() {
-        List<Role> list = StreamSupport.stream(roleRep.findAll().spliterator(), false)
+        List<Role> list = StreamSupport.stream(roleService.findAll().spliterator(),
+                        false)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(list,
                 list.isEmpty() ? HttpStatus.NOT_FOUND : HttpStatus.OK);
@@ -31,26 +32,26 @@ public class RoleController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Role> findById(@PathVariable int id) {
-        Optional<Role> role = roleRep.findById(id);
+        Optional<Role> role = roleService.findById(id);
         return new ResponseEntity<>(role.orElseGet(Role::new),
                 role.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/")
     public ResponseEntity<Role> save(@RequestBody Role role) {
-        return new ResponseEntity<>(roleRep.save(role),
+        return new ResponseEntity<>(roleService.saveOrUpdate(role),
                 HttpStatus.CREATED);
     }
 
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Role role) {
-        roleRep.save(role);
+        roleService.saveOrUpdate(role);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
-        roleRep.deleteById(id);
+        roleService.delete(id);
         return ResponseEntity.ok().build();
     }
 }

@@ -30,6 +30,7 @@ public class Room {
     @OneToMany(mappedBy = "room")
     private List<Message> messages = new ArrayList<>();
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "person_room",
             joinColumns = { @JoinColumn(name = "room_id",
