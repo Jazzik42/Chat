@@ -18,7 +18,7 @@ import org.hibernate.annotations.Cascade;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(of = {"id", "name"})
 @Table(name = "person")
 public class Person {
 
@@ -26,6 +26,7 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(unique = true, updatable = false)
     private String name;
     private String password;
 
@@ -45,4 +46,8 @@ public class Person {
 
     @ManyToOne
     private Role role;
+
+    public void joinRoom(Room room) {
+        this.rooms.add(room);
+    }
 }

@@ -13,7 +13,7 @@ create table role
 create table person
 (
     id       serial primary key,
-    name     varchar(200) not null,
+    name     varchar(200) not null unique,
     password varchar(200) not null,
     role_id  int references role (id)
 );
