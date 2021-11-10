@@ -4,6 +4,8 @@ Chat
 ## Технологии
 * Spring Boot(Web, Data, Security)
 * REST API
+* JWT authentication
+* Hibernate
 * PostgreSQL
 * Maven
 
