@@ -16,7 +16,7 @@ import static java.util.Collections.emptyList;
 public class UserDetailsServiceImpl implements UserDetailsService {
     private PersonService personService;
 
-    public UserDetailsServiceImpl(PersonService personService) {
+    public UserDetailsServiceImpl(PersonService personService)  {
         this.personService = personService;
     }
 

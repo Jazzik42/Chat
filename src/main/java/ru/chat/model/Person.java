@@ -3,6 +3,7 @@ package ru.chat.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +29,7 @@ public class Person {
 
     @Column(unique = true, updatable = false)
     private String name;
+    @Size(min = 4, max = 16, message = "password must be min 4 and max 16 chars")
     private String password;
 
     @JsonIgnore

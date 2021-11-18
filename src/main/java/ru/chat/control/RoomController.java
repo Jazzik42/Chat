@@ -3,11 +3,12 @@ package ru.chat.control;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.chat.model.Room;
 import ru.chat.service.room.RoomService;
 
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -22,37 +23,38 @@ public class RoomController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Room>> findAll() {
+    public List<Room> findAll() {
         List<Room> list = StreamSupport.stream(roomService.findAll()
                         .spliterator(),
                 false).collect(Collectors.toList());
-        return new ResponseEntity<>(list,
-                list.isEmpty() ? HttpStatus.NOT_FOUND
-                        : HttpStatus.OK);
+        if (list.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Rooms is not found");
+        }
+        return list;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Room> findById(@PathVariable int id) {
-        Optional<Room> room = roomService.findById(id);
-        return new ResponseEntity<>(room.orElseGet(Room::new),
-                room.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+    public Room findById(@PathVariable int id) {
+        return roomService.findById(id).orElseThrow(()
+        -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room is not found"));
     }
 
     @GetMapping("/byName/{name}")
-    public ResponseEntity<Room> findByName(@PathVariable String name) {
-        Optional<Room> room = roomService.findByName(name);
-        return new ResponseEntity<>(room.orElseGet(Room::new),
-                room.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+    public Room findByName(@PathVariable String name) {
+        return  roomService.findByName(name).orElseThrow(()
+                -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Role is not found."));
     }
 
     @PostMapping("/")
-    public ResponseEntity<Room> save(@RequestBody Room room) {
+    public ResponseEntity<Room> save(@Valid @RequestBody Room room) {
         return new ResponseEntity<>(roomService.saveOrUpdate(room),
                 HttpStatus.CREATED);
     }
 
     @PutMapping("/")
-    public ResponseEntity<Room> update(@RequestBody Room room) {
+    public ResponseEntity<Room> update(@Valid @RequestBody Room room) {
         return new ResponseEntity<>(roomService.saveOrUpdate(room),
                 HttpStatus.OK);
     }
